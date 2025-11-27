@@ -1,1 +1,1 @@
-# agrichain-connect
+Backend service for AgriChain Connect – supply chain management system.
