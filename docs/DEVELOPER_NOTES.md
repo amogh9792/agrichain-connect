@@ -1,10 +1,13 @@
-------------------------------------------------------------
+---
+
 📅 Date: 27-11-2025
 
 🎫 Tickets Worked On:
+
 - BE-001 – Project Initialization & Environment Setup
 
 📝 Today's Tasks:
+
 - Created GitHub repo
 - Added initial folder structure for app/
 - Created requirements.txt and README
@@ -17,20 +20,24 @@ docker compose up -d
 docker compose ps
 
 📂 Files Modified:
+
 - docker-compose.yml
 - .gitignore
 - README.md
 
 🐞 Issues Faced:
+
 - Docker Desktop engine was not running → got pipe error
 - Clarified how ${VAR} works in docker compose
 
 🛠 How Issues Were Solved:
+
 - Restarted Docker Desktop
 - Enabled WSL
 - Added correct DB_HOST in .env
 
 📚 Learnings:
+
 - Docker Compose reads .env automatically
 - Using .env avoids exposing DB credentials
 - Project skeleton must be created before backend logic
@@ -41,99 +48,112 @@ docker compose ps
 - Project skeleton must be completed before any backend coding.
 
 ➡️ Next Steps:
+
 - Implement connection.py
 - Setup Alembic and migrations
-------------------------------------------------------------
 
+---
 
-------------------------------------------------------------
+---
 
 # 📅 Date: 27-11-2025
 
 # 🎫 Tickets Worked On:
+
 - **BE-002 – Database Setup, Environment Fixes & Alembic Initialization**
 
-------------------------------------------------------------
+---
 
 # 📝 Today's Tasks:
 
-- Added `docker-compose.yml` to run PostgreSQL using Docker  
-- Created `.env` file for storing DB username & password securely  
-- Installed and configured **SQLAlchemy** (ORM)  
-- Installed and configured **Alembic** for database migrations  
-- Fixed Windows PostgreSQL service conflict  
-- Ensured Docker PostgreSQL is the only active database  
-- Successfully created & applied initial Alembic migration  
+- Added `docker-compose.yml` to run PostgreSQL using Docker
+- Created `.env` file for storing DB username & password securely
+- Installed and configured **SQLAlchemy** (ORM)
+- Installed and configured **Alembic** for database migrations
+- Fixed Windows PostgreSQL service conflict
+- Ensured Docker PostgreSQL is the only active database
+- Successfully created & applied initial Alembic migration
 
-------------------------------------------------------------
+---
 
+### 🐘 What is PostgreSQL?
 
-### 🐘 What is PostgreSQL?  
 A relational SQL database that stores all backend data: users, farmers, vendors, inventory, orders, etc.
 
-### 🐳 What is Docker & Why Did We Use It?  
+### 🐳 What is Docker & Why Did We Use It?
+
 Docker creates a **mini isolated environment** where PostgreSQL runs safely without interfering with Windows.  
 No installation headaches, no version conflicts, same environment for all developers.
 
-### 🧠 What is SQLAlchemy?  
+### 🧠 What is SQLAlchemy?
+
 A Python ORM (Object Relational Mapper).  
 Lets us write **Python classes** instead of **raw SQL queries**.
 
-### 🔧 What is Alembic & Why Use It?  
+### 🔧 What is Alembic & Why Use It?
+
 Alembic is **Git for your database schema**.
 
-- When models change → Alembic creates migration files  
-- Migration files keep database structure consistent everywhere  
-- Teams avoid schema conflicts  
-- Production DBs stay synchronized safely  
+- When models change → Alembic creates migration files
+- Migration files keep database structure consistent everywhere
+- Teams avoid schema conflicts
+- Production DBs stay synchronized safely
 
 Without Alembic, databases become mismatched and break the application.
 
-------------------------------------------------------------
+---
 
 # 💻 Commands Used:
 
-### ▶ Start PostgreSQL using Docker  
+### ▶ Start PostgreSQL using Docker
+
 ```sh
 docker compose up -d
 ```
 
-### ▶ Check running containers  
+### ▶ Check running containers
+
 ```sh
 docker compose ps
 ```
 
-### ▶ Stop and reset database volume  
+### ▶ Stop and reset database volume
+
 ```sh
 docker compose down -v
 ```
 
-### ▶ Enter PostgreSQL inside container  
+### ▶ Enter PostgreSQL inside container
+
 ```sh
 docker exec -it agrichain_db psql -U postgres
 ```
 
-### ▶ Create database  
+### ▶ Create database
+
 ```sql
 CREATE DATABASE agrichain;
 ```
 
-### ▶ Initialize Alembic  
+### ▶ Initialize Alembic
+
 ```sh
 alembic init alembic
 ```
 
-### ▶ Create migration file  
+### ▶ Create migration file
+
 ```sh
 alembic revision --autogenerate -m "initial migration"
 ```
 
-### ▶ Apply migration  
+### ▶ Apply migration
+
 ```sh
 alembic upgrade head
 ```
 
-------------------------------------------------------------
+---
 
 # 📂 Files Modified:
 
@@ -144,49 +164,54 @@ alembic upgrade head
 - **.gitignore**
 - Initial migration in `alembic/versions/`
 
-------------------------------------------------------------
+---
 
 # 🐞 Issues Faced:
 
-### ❌ Issue 1 – Alembic “database does not exist”  
+### ❌ Issue 1 – Alembic “database does not exist”
+
 **Cause:**  
 Windows had its own PostgreSQL service running on port 5432.  
 Alembic connected to that instead of Docker PostgreSQL.
 
-### ❌ Issue 2 – Another process using port 5432 (`wslrelay.exe`)  
+### ❌ Issue 2 – Another process using port 5432 (`wslrelay.exe`)
+
 WSL networking was listening on IPv6 but did not break Docker.  
 Needed verification to ensure Docker was still the primary.
 
-### ❌ Issue 3 – Alembic could not autogenerate  
+### ❌ Issue 3 – Alembic could not autogenerate
+
 `env.py` was missing correct project path + metadata import.
 
-------------------------------------------------------------
+---
 
 # 🛠 How Issues Were Solved:
 
-- Stopped Windows PostgreSQL service  
+- Stopped Windows PostgreSQL service
+
 ```sh
 net stop postgresql-x64-17
 ```
-- Restarted Docker containers  
-- Recreated database volume  
-- Updated `env.py` to load Base.metadata correctly  
-- Re-ran Alembic commands after fixing DB connection  
-- Verified successful migration creation & application  
 
-------------------------------------------------------------
+- Restarted Docker containers
+- Recreated database volume
+- Updated `env.py` to load Base.metadata correctly
+- Re-ran Alembic commands after fixing DB connection
+- Verified successful migration creation & application
+
+---
 
 # 📚 Learnings:
 
-- Only **one** process can use port 5432.  
-- Docker PostgreSQL is safer and isolated from OS conflicts.  
-- `.env` keeps passwords hidden and secure.  
-- Alembic is essential for keeping DB changes in sync.  
-- SQLAlchemy + Alembic is industry-standard for Python projects.  
-- Docker volumes store data persistently even after container restarts.  
+- Only **one** process can use port 5432.
+- Docker PostgreSQL is safer and isolated from OS conflicts.
+- `.env` keeps passwords hidden and secure.
+- Alembic is essential for keeping DB changes in sync.
+- SQLAlchemy + Alembic is industry-standard for Python projects.
+- Docker volumes store data persistently even after container restarts.
 - Migrations prevent “works on my PC” database issues.
 
-------------------------------------------------------------
+---
 
 # ➡️ Next Steps:
 
@@ -196,6 +221,190 @@ net stop postgresql-x64-17
   - Setup router structure
   - Connect DB session with FastAPI
 
-------------------------------------------------------------
+---
 
+---
 
+📅 Date: 28-11-2025  
+🎫 Ticket: BE-003 – FastAPI Application Bootstrap
+
+---
+
+🎯 **Objective**  
+Set up the base FastAPI application with a clean folder structure, a configuration module, and a health-check API.  
+This forms the foundation for all future modules (Auth, Farmer, Vendor, Orders, Produce).
+
+📝 **Today's Tasks**
+
+🌱 **1. Removed unused folder**
+
+- Deleted old folder `app/routers/`  
+  (We use `app/api/routes/` for the modern routing structure.)
+
+⚙️ **2. Added configuration module**  
+Created file: `app/core/config.py`  
+Purpose:
+
+- Loads `.env` variables
+- Centralized project settings (DB, project name)
+- Used later in DB connection, JWT config, email config, etc.
+
+📁 **3. Created API routing structure**  
+Created:
+
+```
+app/api/routes/
+```
+
+Purpose:  
+This folder will store all API endpoints like `health.py`, `auth.py`, `farmer.py`, `vendor.py`, etc.
+
+❤️ **4. Added Health Route**  
+File: `app/api/routes/health.py`
+
+Endpoint added:
+
+```
+GET /api/health
+```
+
+Expected response:
+
+```json
+{ "status": "ok", "version": "1.0" }
+```
+
+🚀 **5. Added main FastAPI entrypoint**  
+File: `app/main.py`  
+Purpose:
+
+- Create FastAPI app
+- Include routers
+- Define global configuration (title, middleware coming later)
+
+💻 **Commands Used**
+
+```
+mkdir app\core
+mkdir app\api
+mkdir app\api\routes
+rmdir /s /q app\routers
+uvicorn app.main:app --reload
+```
+
+Test API:  
+`http://127.0.0.1:8000/api/health`
+
+📂 **Files Modified / Added**
+
+```
+app/core/config.py
+app/api/routes/health.py
+app/main.py
+app/api/routes/__init__.py
+app/api/__init__.py
+```
+
+🐞 **Issues Faced**
+
+❌ **ImportError: No module named app.api.routes.health**  
+Cause:
+
+- Missing folders or missing `__init__.py`.
+
+Fix:
+
+- Added correct structure and re-imported.
+
+❌ **Confusion: “Where is health_router function?”**  
+Clarification:
+
+- `router = APIRouter()` is imported as:  
+  `from health import router as health_router`
+- It's an alias, not a function.
+
+📚 **Learnings**
+
+- FastAPI uses `APIRouter()` for modular design.
+- `include_router()` mounts routes under a prefix.
+- `config.py` centralizes environment variables.
+- A clean project layout prevents future complexity.
+- Aliasing imports (`router as health_router`) is common practice.
+- `main.py` is always the entrypoint for FastAPI.
+
+➡️ **Next Steps**
+
+- Start BE-004 (User Model + Migration)
+- Create SQLAlchemy models
+- Create Alembic migration for `users` table
+- Prepare `schemas` and `services` folder for upcoming Auth module
+
+---
+
+---
+
+📅 Date: 29-11-2025
+
+🎫 Ticket Worked On:
+
+- **BE-004 – User Model & Database Migration**
+
+📝 Today's Tasks:
+
+- Created the first database entity: **User**
+- Added SQLAlchemy model file under `app/models/`
+- Linked Alembic to SQLAlchemy `Base.metadata`
+- Generated migration using Alembic autogenerate
+- Applied migration to PostgreSQL inside Docker container
+- Verified that `users` table appears in DB
+
+📂 Files Added/Modified:
+
+- `app/models/user.py`
+- `app/database/connection.py` (ensured Base is exported)
+- `alembic/env.py` (configured target_metadata)
+- `alembic/versions/xxxxxxxx_add_users_table.py` (auto migration)
+
+💻 Commands Used:
+
+- `alembic revision --autogenerate -m "add users table"`  
+  Creates migration file based on model changes.
+- `alembic upgrade head`  
+  Applies the migration to the actual database.
+- `docker exec -it agrichain_db psql -U postgres -c "\dt"`  
+  Shows all tables inside the container DB.
+
+🐞 Issues Faced:
+
+- Alembic failing with:
+  _“database agrichain does not exist”_
+- Hostname `db` not resolving inside Alembic
+- Local PostgreSQL Windows service occupying port 5432
+- Docker PostgreSQL not getting correct port due to conflict
+
+🛠 How Issues Were Solved:
+
+- Stopped Windows PostgreSQL service (`postgresql-x64-*`)
+- Restarted Docker Desktop after freeing port 5432
+- Updated Alembic URL to:
+  `postgresql://postgres:amogh@localhost:5432/agrichain`
+- Ensured database exists by checking with:
+  `docker exec -it agrichain_db psql -U postgres -c "\l"`
+- Ran revision again after fixing metadata imports
+
+📚 Learnings:
+
+- Alembic needs SQLAlchemy `Base.metadata` to autogenerate tables.
+- Local system PostgreSQL can conflict with Docker’s PostgreSQL.
+- Docker container hostname (`db`) resolves only inside other containers, **not on Windows host**.
+- Best practice: use `localhost` for Alembic when running locally.
+- First table migration confirms DB setup, metadata wiring, and pipeline all work correctly.
+
+➡️ Next Steps:
+
+- Create User Pydantic schema
+- Build User service layer (create + get user)
+- Add `/users` API router
+- Prepare BE-005 User Registration API
+
+---

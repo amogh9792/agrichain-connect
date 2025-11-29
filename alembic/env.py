@@ -6,17 +6,14 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 # ─────────────────────────────────────────────────────────────
-# Add project root to sys.path so Alembic can import app modules
+# Add project root to PYTHONPATH so Alembic can import app modules
 # ─────────────────────────────────────────────────────────────
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # D:/agrichain-connect
+sys.path.append(BASE_DIR)
 
 # ─────────────────────────────────────────────────────────────
-# Import Base metadata from your SQLAlchemy connection
-# This is required so Alembic knows about your models
-# ─────────────────────────────────────────────────────────────
-from app.database.connection import Base
-
 # Alembic Config object
+# ─────────────────────────────────────────────────────────────
 config = context.config
 
 # Logging config
@@ -24,13 +21,31 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # ─────────────────────────────────────────────────────────────
-# This tells Alembic what metadata to use when autogenerating
+# Import Base + ALL Models
 # ─────────────────────────────────────────────────────────────
+from app.database.connection import Base
+
+# Import all models so Alembic knows the tables
+# Add your models here as they are created
+try:
+    from app.models.user import User
+    # from app.models.vendor import Vendor
+    # from app.models.product import Product
+    # from app.models.order import Order
+    # from app.models.activity_log import ActivityLog
+except ImportError:
+    # Safe fallback – prevents Alembic crashes when models don't exist yet
+    pass
+
+# Alembic needs this to autogenerate migrations
 target_metadata = Base.metadata
 
 
+# ─────────────────────────────────────────────────────────────
+# OFFLINE MIGRATIONS
+# ─────────────────────────────────────────────────────────────
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode."""
+    """Run migrations without connecting to the DB."""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -43,10 +58,13 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
+# ─────────────────────────────────────────────────────────────
+# ONLINE MIGRATIONS
+# ─────────────────────────────────────────────────────────────
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode'."""
+    """Run migrations with actual DB connection."""
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
@@ -61,6 +79,9 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
+# ─────────────────────────────────────────────────────────────
+# MODE SWITCH
+# ─────────────────────────────────────────────────────────────
 if context.is_offline_mode():
     run_migrations_offline()
 else:
