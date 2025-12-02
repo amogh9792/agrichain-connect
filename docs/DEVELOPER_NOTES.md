@@ -527,7 +527,7 @@ Told user to use shorter password or trim input in frontend.
 
 
 📅 Date: 30-11-2025
-🎫 Ticket: BE-005 – User Authentication (Login + JWT Token Generation)
+🎫 Ticket: BE-006 – User Authentication (Login + JWT Token Generation)
 
 📝 Tasks Completed:
 - Added JWT env variables: JWT_SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -561,6 +561,6 @@ uvicorn app.main:app --reload
 - Wrong uvicorn module target breaks server load
 
 ➡️ Next Steps:
-- BE-006 → Authenticated route `/auth/me`
+- BE-007 → Authenticated route `/auth/me`
 - Implement token verification & dependency
 - Return logged-in user details
