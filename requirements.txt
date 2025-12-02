@@ -9,3 +9,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 pydantic
 email-validator
+pyJWT
