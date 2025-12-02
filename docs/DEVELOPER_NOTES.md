@@ -521,3 +521,46 @@ Told user to use shorter password or trim input in frontend.
 - Add token generation service
 - Add password verification logic
 - Add protected routes (farmer/vendor/admin dashboards)
+
+
+
+
+
+📅 Date: 30-11-2025
+🎫 Ticket: BE-005 – User Authentication (Login + JWT Token Generation)
+
+📝 Tasks Completed:
+- Added JWT env variables: JWT_SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+- Installed packages: python-jose[cryptography], passlib[bcrypt], pydantic-settings
+- Updated config.py to include JWT fields
+- Created core/security.py → hashing + token creation
+- Created services/auth_service.py → login logic
+- Added POST /auth/login route in auth_router.py
+- Updated main.py to include auth routes
+
+📂 Files Modified/Added:
+.env
+app/core/config.py
+app/core/security.py
+app/services/auth_service.py
+app/api/routes/auth_router.py
+app/main.py
+
+💻 Commands Used:
+pip install python-jose[cryptography] passlib[bcrypt] pydantic-settings
+uvicorn app.main:app --reload
+
+🐞 Issues & Fixes:
+1) BaseSettings import error → installed `pydantic-settings`
+2) “Extra inputs not permitted” → added JWT fields to Settings model
+3) uvicorn error “main not found” → correct command: uvicorn app.main:app --reload
+
+📚 Learnings:
+- JWT tokens need secret key + algorithm + expiry to work
+- Pydantic v2 environment management comes from pydantic-settings
+- Wrong uvicorn module target breaks server load
+
+➡️ Next Steps:
+- BE-006 → Authenticated route `/auth/me`
+- Implement token verification & dependency
+- Return logged-in user details
