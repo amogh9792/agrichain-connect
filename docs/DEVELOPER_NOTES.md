@@ -408,3 +408,116 @@ Clarification:
 - Prepare BE-005 User Registration API
 
 ---
+
+📅 Date: 30-11-2025
+
+🎫 Ticket Worked On:
+
+- BE-005 – User Registration API (Models → Schemas → Service → Router → Testing)
+
+📝 Today's Tasks:
+
+- Added Pydantic schemas for user creation & response
+- Implemented password hashing using passlib + bcrypt
+- Created UserService for business logic
+- Added database session dependency using Depends()
+- Implemented POST /users/register endpoint
+- Validated duplicate emails
+- Wired routes inside main.py
+- Tested API on Swagger UI
+- Fixed bcrypt installation issue
+- Fixed Pydantic schema errors (missing type annotations)
+- Ensured DB connection uses correct host (localhost not db)
+
+📂 Files Added/Modified:
+
+- app/schemas/user.py
+- app/services/user_service.py
+- app/api/routes/user_router.py
+- app/database/session.py
+- app/main.py
+
+💻 Commands Used:
+
+# Run server
+
+uvicorn app.main:app --reload
+
+# Install required packages
+
+pip install passlib[bcrypt]
+pip install email-validator
+
+# Check if table exists in DB
+
+docker exec -it agrichain_db psql -U postgres -c "\dt"
+
+# Test API in Swagger
+
+http://127.0.0.1:8000/docs
+
+# Git workflow
+
+git checkout -b BE-005-user-registration
+git add .
+git commit -m "BE-005: Implemented User Registration API"
+git checkout main
+git merge BE-005-user-registration
+git push origin main
+
+🐞 Issues Faced:
+
+❌ Issue 1 – Pydantic error:
+“created_at has no type annotation”
+Reason: Pydantic v2 needs types for all fields.
+
+Fix:
+created_at: datetime
+
+❌ Issue 2 – bcrypt backend error:
+"module 'bcrypt' has no attribute '**about**'"
+
+Fix:
+pip uninstall bcrypt
+pip install bcrypt==4.0.1
+
+❌ Issue 3 – Hostname "db" not resolving
+Reason: Alembic & FastAPI run on Windows host, not inside Docker.
+
+Fix:
+Use:
+DB_HOST=localhost
+
+❌ Issue 4 – Password longer than 72 bytes
+Reason:
+bcrypt has a 72-byte limit.
+
+Fix:
+Told user to use shorter password or trim input in frontend.
+
+🛠 How Issues Were Solved:
+
+- Updated DB_HOST to localhost everywhere outside Docker
+- Cleaned up schemas to match Pydantic v2 rules
+- Installed compatible bcrypt version
+- Added proper session dependency for FastAPI
+- Wrapped duplicate email error in HTTPException
+- Restarted Docker container after DB fixes
+- Verified migration exists and table is visible in PostgreSQL
+
+📚 Learnings:
+
+- Pydantic v2 is strict about field type annotations
+- bcrypt enforces a maximum password length (72 bytes)
+- Alembic uses localhost, not Docker-hostname, when executed on Windows
+- Service layer keeps business logic clean and reusable
+- Using Depends(SessionLocal) keeps DB session lifecycle correct
+- FastAPI's automatic request parsing + validation reduces boilerplate
+- Proper folder structure (models, schemas, services, routes) scales better
+
+➡️ Next Steps:
+
+- Start BE-006 – Login & JWT Authentication
+- Add token generation service
+- Add password verification logic
+- Add protected routes (farmer/vendor/admin dashboards)
