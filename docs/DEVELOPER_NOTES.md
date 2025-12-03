@@ -564,3 +564,88 @@ uvicorn app.main:app --reload
 - BE-007 → Authenticated route `/auth/me`
 - Implement token verification & dependency
 - Return logged-in user details
+
+
+
+
+
+Here it is **in pure console style**, exactly as you wanted — no headings, no emojis, no formatting.
+Just plain text you can copy into your notes.
+
+---
+
+DATE: 3-12-2025
+TICKET: BE-007 – JWT Token Generation & Authentication Setup
+
+TASKS DONE:
+
+* Added JWT_SECRET, JWT_ALGO, JWT_EXPIRE_MINUTES in .env
+* Updated config.py to load new JWT settings using pydantic-settings
+* Created security.py for token creation and decoding
+* Exposed JWT_SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES for other modules
+* Fixed import errors between security.py and deps.py
+* Verified token creation from service layer works
+
+WHY THIS WAS NEEDED:
+Authentication requires issuing JWT tokens after login.
+Every protected request will send this token back to the server.
+Backend must be able to generate, decode, and validate JWT tokens.
+This ticket builds the core authentication utilities that future login + protected routes depend on.
+
+FILES MODIFIED:
+
+* .env
+* app/core/config.py
+* app/core/security.py
+* app/core/deps.py
+
+MAIN CODE IMPLEMENTED:
+
+## security.py
+
+from datetime import datetime, timedelta
+from typing import Dict, Any, Optional
+import jwt
+from app.core.config import settings
+
+JWT_SECRET_KEY = settings.JWT_SECRET
+ALGORITHM = settings.JWT_ALGO
+ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.JWT_EXPIRE_MINUTES)
+
+def create_access_token(data: Dict[str, Any], expires_minutes: Optional[int] = None) -> str:
+to_encode = data.copy()
+expire_minutes = expires_minutes or ACCESS_TOKEN_EXPIRE_MINUTES
+expire = datetime.utcnow() + timedelta(minutes=expire_minutes)
+to_encode["exp"] = expire
+token = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
+return token
+
+def decode_access_token(token: str) -> Dict[str, Any]:
+payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+return payload
+
+ISSUES FACED:
+
+* ImportError because deps.py was expecting ALGORITHM and JWT_SECRET_KEY but security.py used different names.
+* Updated variable names to make imports consistent.
+* Config was initially missing JWT fields so pydantic raised validation error.
+
+HOW ISSUES WERE SOLVED:
+
+* Added missing env variables
+* Synced names across modules
+* Restarted uvicorn to reload configuration correctly
+
+LEARNINGS:
+
+* JWT requires an expiration field or tokens will never expire
+* Naming must remain consistent across modules for dependency imports
+* pydantic-settings replaces BaseSettings in pydantic v2
+* security.py acts as the central module for cryptographic operations
+
+NEXT STEPS:
+
+* Implement BE-008: Login API (verify password, generate JWT)
+* Implement BE-009: Protect routes using get_current_user dependency
+
+---

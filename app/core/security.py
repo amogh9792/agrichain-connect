@@ -2,8 +2,14 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
 import jwt
-
 from app.core.config import settings
+
+# ------------------------------
+# Exposed constants (for deps.py)
+# ------------------------------
+JWT_SECRET_KEY = settings.JWT_SECRET
+ALGORITHM = settings.JWT_ALGO
+ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.JWT_EXPIRE_MINUTES)
 
 
 def create_access_token(
@@ -12,31 +18,29 @@ def create_access_token(
 ) -> str:
     """
     Create a JWT access token with expiry.
-    `data` usually contains user id or email.
     """
     to_encode = data.copy()
 
-    expire_minutes = expires_minutes or settings.JWT_EXPIRE_MINUTES
+    expire_minutes = expires_minutes or ACCESS_TOKEN_EXPIRE_MINUTES
     expire = datetime.utcnow() + timedelta(minutes=expire_minutes)
 
     to_encode["exp"] = expire
 
-    encoded_jwt = jwt.encode(
+    token = jwt.encode(
         to_encode,
-        settings.JWT_SECRET,
-        algorithm=settings.JWT_ALGO
+        JWT_SECRET_KEY,
+        algorithm=ALGORITHM
     )
-    return encoded_jwt
+    return token
 
 
 def decode_access_token(token: str) -> Dict[str, Any]:
     """
-    Decode a JWT and return its payload.
-    Raises jwt exceptions if invalid/expired.
+    Decode JWT and return payload.
     """
     payload = jwt.decode(
         token,
-        settings.JWT_SECRET,
-        algorithms=[settings.JWT_ALGO]
+        JWT_SECRET_KEY,
+        algorithms=[ALGORITHM]
     )
     return payload
