@@ -29,6 +29,7 @@ from app.database.connection import Base
 # Add your models here as they are created
 try:
     from app.models.user import User
+    from app.models.farmer import Farmer
     # from app.models.vendor import Vendor
     # from app.models.product import Product
     # from app.models.order import Order

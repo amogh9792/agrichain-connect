@@ -643,9 +643,65 @@ LEARNINGS:
 * pydantic-settings replaces BaseSettings in pydantic v2
 * security.py acts as the central module for cryptographic operations
 
-NEXT STEPS:
-
-* Implement BE-008: Login API (verify password, generate JWT)
-* Implement BE-009: Protect routes using get_current_user dependency
 
 ---
+
+
+
+
+
+DATE: 04-12-2025
+TICKET: BE-008 – Farmer Module (Model, Migration, Schema, Service, Router)
+
+TASKS DONE:
+Added Farmer SQLAlchemy model
+Created Alembic migration for farmers table
+Added Pydantic schemas for farmer create and response
+Implemented FarmerService for create, list, and get farmer operations
+Added farmer API routes: POST /farmers, GET /farmers, GET /farmers/{id}
+Integrated farmer router into main application
+Verified farmers table exists in PostgreSQL after applying migrations
+Completed end-to-end farmer onboarding workflow
+
+WHY THIS WAS NEEDED:
+Farmer onboarding is a core requirement for AgriChain Connect.
+Vendor-farmer matching, produce management, and order lifecycle modules depend on this data.
+This is the first major domain module after authentication.
+
+FILES ADDED / MODIFIED:
+app/models/farmer.py
+app/schemas/farmer.py
+app/services/farmer_service.py
+app/api/routes/farmer_router.py
+alembic/versions/<timestamp>_add_farmers_table.py
+app/main.py
+
+DATABASE CHANGES:
+New table created: farmers
+Columns include id, name, phone (unique), location, created_at
+Migration generated and applied successfully through Alembic
+
+API ENDPOINTS ADDED:
+POST /farmers
+GET /farmers
+GET /farmers/{id}
+
+ISSUES FACED:
+Alembic did not detect the Farmer model initially
+Duplicate phone numbers caused IntegrityError
+Router import failed due to missing __init__.py file
+
+HOW ISSUES WERE SOLVED:
+Imported Farmer model in Alembic env.py metadata
+Added phone uniqueness validation in the service layer
+Added missing __init__.py in routes folder
+Re-ran migrations after resetting the database state
+
+LEARNINGS:
+All modules follow the same structure: model -> migration -> schema -> service -> router
+Alembic only detects models included in Base.metadata
+Service layer keeps business logic separate from API layer
+Consistent structure simplifies future module development
+
+NEXT STEPS:
+Proceed to BE-009 – Vendor Module (model, migration, schema, service, router)
