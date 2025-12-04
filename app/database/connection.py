@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
+from app.core.logging_config import logger
 
 load_dotenv()
 
@@ -23,7 +24,9 @@ Base = declarative_base()
 
 def get_db():
     db = SessionLocal()
+    logger.info("DB Session Opened")
     try:
         yield db
     finally:
         db.close()
+        logger.info("DB session Closed")

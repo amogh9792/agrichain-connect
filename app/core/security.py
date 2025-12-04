@@ -4,9 +4,7 @@ from typing import Dict, Any, Optional
 import jwt
 from app.core.config import settings
 
-# ------------------------------
-# Exposed constants (for deps.py)
-# ------------------------------
+
 JWT_SECRET_KEY = settings.JWT_SECRET
 ALGORITHM = settings.JWT_ALGO
 ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.JWT_EXPIRE_MINUTES)

@@ -30,6 +30,7 @@ from app.database.connection import Base
 try:
     from app.models.user import User
     from app.models.farmer import Farmer
+    from app.models.vendor import Vendor
     # from app.models.vendor import Vendor
     # from app.models.product import Product
     # from app.models.order import Order
