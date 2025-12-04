@@ -522,14 +522,11 @@ Told user to use shorter password or trim input in frontend.
 - Add password verification logic
 - Add protected routes (farmer/vendor/admin dashboards)
 
-
-
-
-
 📅 Date: 30-11-2025
 🎫 Ticket: BE-006 – User Authentication (Login + JWT Token Generation)
 
 📝 Tasks Completed:
+
 - Added JWT env variables: JWT_SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 - Installed packages: python-jose[cryptography], passlib[bcrypt], pydantic-settings
 - Updated config.py to include JWT fields
@@ -551,23 +548,22 @@ pip install python-jose[cryptography] passlib[bcrypt] pydantic-settings
 uvicorn app.main:app --reload
 
 🐞 Issues & Fixes:
-1) BaseSettings import error → installed `pydantic-settings`
-2) “Extra inputs not permitted” → added JWT fields to Settings model
-3) uvicorn error “main not found” → correct command: uvicorn app.main:app --reload
+
+1. BaseSettings import error → installed `pydantic-settings`
+2. “Extra inputs not permitted” → added JWT fields to Settings model
+3. uvicorn error “main not found” → correct command: uvicorn app.main:app --reload
 
 📚 Learnings:
+
 - JWT tokens need secret key + algorithm + expiry to work
 - Pydantic v2 environment management comes from pydantic-settings
 - Wrong uvicorn module target breaks server load
 
 ➡️ Next Steps:
+
 - BE-007 → Authenticated route `/auth/me`
 - Implement token verification & dependency
 - Return logged-in user details
-
-
-
-
 
 Here it is **in pure console style**, exactly as you wanted — no headings, no emojis, no formatting.
 Just plain text you can copy into your notes.
@@ -579,12 +575,12 @@ TICKET: BE-007 – JWT Token Generation & Authentication Setup
 
 TASKS DONE:
 
-* Added JWT_SECRET, JWT_ALGO, JWT_EXPIRE_MINUTES in .env
-* Updated config.py to load new JWT settings using pydantic-settings
-* Created security.py for token creation and decoding
-* Exposed JWT_SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES for other modules
-* Fixed import errors between security.py and deps.py
-* Verified token creation from service layer works
+- Added JWT_SECRET, JWT_ALGO, JWT_EXPIRE_MINUTES in .env
+- Updated config.py to load new JWT settings using pydantic-settings
+- Created security.py for token creation and decoding
+- Exposed JWT_SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES for other modules
+- Fixed import errors between security.py and deps.py
+- Verified token creation from service layer works
 
 WHY THIS WAS NEEDED:
 Authentication requires issuing JWT tokens after login.
@@ -594,10 +590,10 @@ This ticket builds the core authentication utilities that future login + protect
 
 FILES MODIFIED:
 
-* .env
-* app/core/config.py
-* app/core/security.py
-* app/core/deps.py
+- .env
+- app/core/config.py
+- app/core/security.py
+- app/core/deps.py
 
 MAIN CODE IMPLEMENTED:
 
@@ -626,29 +622,24 @@ return payload
 
 ISSUES FACED:
 
-* ImportError because deps.py was expecting ALGORITHM and JWT_SECRET_KEY but security.py used different names.
-* Updated variable names to make imports consistent.
-* Config was initially missing JWT fields so pydantic raised validation error.
+- ImportError because deps.py was expecting ALGORITHM and JWT_SECRET_KEY but security.py used different names.
+- Updated variable names to make imports consistent.
+- Config was initially missing JWT fields so pydantic raised validation error.
 
 HOW ISSUES WERE SOLVED:
 
-* Added missing env variables
-* Synced names across modules
-* Restarted uvicorn to reload configuration correctly
+- Added missing env variables
+- Synced names across modules
+- Restarted uvicorn to reload configuration correctly
 
 LEARNINGS:
 
-* JWT requires an expiration field or tokens will never expire
-* Naming must remain consistent across modules for dependency imports
-* pydantic-settings replaces BaseSettings in pydantic v2
-* security.py acts as the central module for cryptographic operations
-
+- JWT requires an expiration field or tokens will never expire
+- Naming must remain consistent across modules for dependency imports
+- pydantic-settings replaces BaseSettings in pydantic v2
+- security.py acts as the central module for cryptographic operations
 
 ---
-
-
-
-
 
 DATE: 04-12-2025
 TICKET: BE-008 – Farmer Module (Model, Migration, Schema, Service, Router)
@@ -673,7 +664,7 @@ app/models/farmer.py
 app/schemas/farmer.py
 app/services/farmer_service.py
 app/api/routes/farmer_router.py
-alembic/versions/<timestamp>_add_farmers_table.py
+alembic/versions/<timestamp>\_add_farmers_table.py
 app/main.py
 
 DATABASE CHANGES:
@@ -689,12 +680,12 @@ GET /farmers/{id}
 ISSUES FACED:
 Alembic did not detect the Farmer model initially
 Duplicate phone numbers caused IntegrityError
-Router import failed due to missing __init__.py file
+Router import failed due to missing **init**.py file
 
 HOW ISSUES WERE SOLVED:
 Imported Farmer model in Alembic env.py metadata
 Added phone uniqueness validation in the service layer
-Added missing __init__.py in routes folder
+Added missing **init**.py in routes folder
 Re-ran migrations after resetting the database state
 
 LEARNINGS:
@@ -705,3 +696,196 @@ Consistent structure simplifies future module development
 
 NEXT STEPS:
 Proceed to BE-009 – Vendor Module (model, migration, schema, service, router)
+
+Here is the **Vendor Module documentation** in **clean Markdown format**, exactly like your previous project docs.
+You can **paste this directly into your `.md` file** for BE-010.
+
+---
+
+# 📅 Date: 06-12-2025
+
+# 🎫 Ticket: **BE-010 – Vendor Module (Model, Schema, Service, Router, Migration)**
+
+---
+
+## 📝 Tasks Completed
+
+- Added **Vendor SQLAlchemy model**
+- Added **Pydantic schemas** for create + response
+- Created **VendorService** with:
+
+  - create vendor
+  - list vendors
+  - get vendor by ID
+
+- Added **vendor_router** with `/vendors` endpoints
+- Integrated **logging** into all vendor operations
+- Generated and applied **Alembic migration** for vendors table
+- Registered router inside `main.py`
+- Tested endpoints via Swagger UI
+
+---
+
+## 📂 Files Added / Modified
+
+```
+app/models/vendor.py
+app/schemas/vendor.py
+app/services/vendor_service.py
+app/api/routes/vendor_router.py
+app/main.py
+alembic/versions/<timestamp>_add_vendors_table.py
+```
+
+---
+
+## 🧱 Vendor Model
+
+```
+id
+name
+phone (unique)
+company_name (optional)
+location (optional)
+created_at (timestamp, default now)
+```
+
+---
+
+## 🔧 VendorService – Business Logic
+
+- Checks **duplicate phone**
+- Creates vendor entry
+- Fetches list of vendors
+- Fetches vendor by ID
+- Logs:
+
+  - creation attempts
+  - success
+  - warnings for duplicates
+  - warnings for vendor not found
+
+---
+
+## 🔌 API Endpoints
+
+### ➤ POST `/vendors/`
+
+Create a new vendor.
+Requires:
+
+```
+{
+  "name": "Balu Traders",
+  "phone": "9876543210",
+  "company_name": "Balu Agro",
+  "location": "Pune"
+}
+```
+
+Validations:
+
+- phone must be 10 digits
+- unique phone number
+
+---
+
+### ➤ GET `/vendors/`
+
+Returns a list of all vendors.
+
+---
+
+### ➤ GET `/vendors/{id}`
+
+Returns a single vendor by its ID.
+If not found → returns **404 Vendor not found**.
+
+---
+
+## 🐞 Issues Faced
+
+- None major.
+- Minor adjustments needed for phone validation and logging alignment.
+
+---
+
+## 🛠 How Issues Were Solved
+
+- Added phone length constraints in Pydantic schema
+- Used HTTPException to handle duplicate cases
+- Verified table creation with Alembic auto migration
+- Included router in main.py to enable API visibility
+
+---
+
+## 📚 Learnings
+
+- Vendor entity structure is similar to Farmer module
+- Adding logging at service level gives full traceability
+- Validation becomes simpler using Pydantic fields
+- Alembic autogenerate works only when model imports are correct
+- REST design patterns become consistent when modules follow the same structure
+
+---
+
+## ➡️ Next Steps
+
+- **BE-011 – Produce Module**
+
+  - produce model
+  - link produce with farmer
+  - vendor → farmer procurement logic base
+
+  📅 Date: 04-12-2025
+  🎫 Ticket: BE-011 – Produce Module (CRUD + Farmer Link + Logging)
+
+📝 Tasks Completed:
+
+• Added Produce SQLAlchemy model linked with Farmer (farmer_id FK)
+• Created Pydantic schemas for create, update, and response
+• Implemented full ProduceService with logging:
+
+- Create produce
+- Get single produce
+- List all produce
+- List produce by farmer
+- Update produce
+- Delete produce
+  • Added REST routes under /produce for complete CRUD operations
+  • Added logging at all stages (create, update, errors, fetch)
+  • Ensured all timestamps return in IST for API responses
+  • Verified DB model matches existing produce table (no migrations needed)
+
+📂 Files Added / Modified:
+
+• app/models/produce.py
+• app/schemas/produce.py
+• app/services/produce_service.py
+• app/api/routes/produce_router.py
+• app/main.py (router include)
+
+🐞 Issues Faced:
+
+• Category field mismatch with database → removed and aligned model
+• Wrong ForeignKey target (“farmer” vs “farmers”) → fixed to “farmers”
+• Alembic error: “foreign key not found” → caused by wrong table name
+• Logging timestamps showing UTC → added IST conversion in log formatter
+
+🛠 How Issues Were Solved:
+
+• Rebuilt Produce module without category field
+• Fixed Farmer model to use `__tablename__ = "farmers"`
+• Updated env.py imports so Alembic recognizes models
+• Added IST logging formatter for correct timestamp logging
+• Added response-time timezone conversion for API outputs
+
+📚 Learnings:
+
+• Model and DB schema must match exactly or Alembic breaks
+• FastAPI response models require timezone handling if DB uses UTC
+• Logging should include timestamps, IDs, and operation details
+• CRUD patterns become cleaner with service-layer isolation
+• Relationships (Farmer → Produce) must be carefully mapped
+
+---
