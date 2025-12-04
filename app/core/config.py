@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     JWT_ALGO: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 30
 
+    LOG_LEVEL: str = "INFO"
+
     class Config:
         env_file = ".env"
 
