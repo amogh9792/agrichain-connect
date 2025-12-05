@@ -5,6 +5,7 @@ from app.api.routes.auth_router import router as auth_router
 from app.api.routes.farmer_router import router as farmer_router
 from app.api.routes.vendor_router import router as vendor_router
 from app.api.routes.produce_router import router as produce_router
+from app.api.routes.market_router import router as market_router
 
 
 from app.middleware.request_logger import log_requests
@@ -31,3 +32,4 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(farmer_router)
 app.include_router(vendor_router)
 app.include_router(produce_router)
+app.include_router(market_router)
