@@ -6,7 +6,8 @@ from app.api.routes.farmer_router import router as farmer_router
 from app.api.routes.vendor_router import router as vendor_router
 from app.api.routes.produce_router import router as produce_router
 from app.api.routes.market_router import router as market_router
-
+from app.api.routes.log_router import router as log_router
+from app.api.routes.order_router import router as order_router
 
 from app.middleware.request_logger import log_requests
 from app.core.logging_config import logger
@@ -33,3 +34,5 @@ app.include_router(farmer_router)
 app.include_router(vendor_router)
 app.include_router(produce_router)
 app.include_router(market_router)
+app.include_router(order_router)
+app.include_router(log_router)

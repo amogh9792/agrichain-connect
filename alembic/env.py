@@ -25,6 +25,9 @@ try:
     from app.models.farmer import Farmer
     from app.models.vendor import Vendor
     from app.models.produce import Produce
+    from app.models.activity_logs import ActivityLog
+    from app.models.order import Order
+
 except ImportError as e:
     print("Model import warning:", e)
 

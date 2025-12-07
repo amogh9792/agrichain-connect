@@ -889,3 +889,149 @@ If not found → returns **404 Vendor not found**.
 • Relationships (Farmer → Produce) must be carefully mapped
 
 ---
+
+Here is the **BE-012 documentation in clean Markdown style**, exactly like your previous docs.
+Copy–paste directly into your project’s `.md` file.
+
+---
+
+# 📅 Date: 05-12-2025
+
+# 🎫 Ticket: **BE-012 – Vendor Marketplace REST API (Produce Browsing & Search)**
+
+---
+
+## 🎯 Objective
+
+Enable vendors to browse produce listed by farmers through public marketplace REST APIs, supporting filters, sorting, and pagination.
+
+---
+
+## 📝 Tasks Completed
+
+### ✔ Added public marketplace router
+
+`/market/produce` and `/market/produce/{id}`
+
+### ✔ Implemented search filters
+
+- name (partial match)
+- min_price
+- max_price
+- farmer_id
+
+### ✔ Implemented sorting
+
+- price_low_to_high
+- price_high_to_low
+
+### ✔ Added pagination
+
+- limit
+- offset
+
+### ✔ Created public-safe response schema
+
+No sensitive fields returned.
+
+### ✔ Added logging
+
+All search requests, parameters, and result counts logged.
+
+### ✔ Included farmer name in response
+
+Pulled automatically using relationship.
+
+---
+
+## 📂 Files Added / Modified
+
+- `app/api/routes/market_router.py`
+- `app/services/market_service.py`
+- `app/schemas/produce.py` (added Public schema)
+- `app/main.py` (router registration)
+
+---
+
+## 🔗 REST APIs Implemented
+
+### **1) GET /market/produce**
+
+List all produce with filters, sorting, and pagination.
+
+**Query Params:**
+
+- `name` – optional
+- `min_price` – optional
+- `max_price` – optional
+- `farmer_id` – optional
+- `sort` = `price_low_to_high` | `price_high_to_low`
+- `limit` (default 20, max 200)
+- `offset` (default 0)
+
+**Response Example:**
+
+```json
+{
+  "total": 4,
+  "limit": 20,
+  "offset": 0,
+  "results": [
+    {
+      "id": 1,
+      "name": "Tomato",
+      "price": 35,
+      "quantity": 50,
+      "farmer_id": 1,
+      "farmer_name": "Ravi Kumar",
+      "created_at": "2025-12-05T14:20:41"
+    }
+  ]
+}
+```
+
+---
+
+### **2) GET /market/produce/{produce_id}**
+
+Fetch single produce item.
+
+**Response Example:**
+
+```json
+{
+  "id": 3,
+  "name": "Onion",
+  "price": 40,
+  "quantity": 140,
+  "farmer_id": 1,
+  "farmer_name": "Ravi Kumar",
+  "created_at": "2025-12-05T14:20:41"
+}
+```
+
+---
+
+## 🐞 Issues Faced
+
+- No results returned initially → produce table was empty
+- Needed to insert farmers + produce first
+- After data insertion, API returned correct results
+
+---
+
+## 🧠 Learnings
+
+- SQL-level filtering + sorting is faster than Python post-processing
+- Always expose a safe public schema when multiple user roles exist
+- Logging search parameters helps debug client-side issues
+- Relationships are useful for attaching farmer name without extra queries
+
+---
+
+## ➡️ Next Steps
+
+Proceed to **BE-013 – Vendor Order Creation Workflow**
+(Create orders, link vendor → farmer → produce, manage status transitions.)
+
+---
